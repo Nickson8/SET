@@ -36,13 +36,13 @@ NO *cria_no(int chave){
     return no;
 }
 
-void rodar_esq(NO *a) {
+void rbt_rodar_esq(NO *a) {
     NO *b = a->f_dir;
 
     a->f_dir = b->f_esq;
     b->f_esq = a;
 }
-void rodar_dir(NO *a) {
+void rbt_rodar_dir(NO *a) {
     NO *b = a->f_esq;
 
     a->f_esq = b->f_dir;
@@ -73,9 +73,9 @@ NO *rbt_insere_no(NO *no, int chave) {
         rbt_insere_no(no->f_esq, chave);
 
     if (cor(no->f_dir) == VERMELHO && cor(no->f_esq) == PRETO)
-        rodar_esq(no);
+        rbt_rodar_esq(no);
     else if (cor(no->f_dir) ==  PRETO && cor(no->f_esq) == VERMELHO)
-        rodar_dir(no);
+        rbt_rodar_dir(no);
     else if (cor(no->f_dir) == VERMELHO && cor(no->f_esq) == VERMELHO)
         inverte(no);    
 }
@@ -142,44 +142,44 @@ bool rbt_vazia(RBT *T) {
 }
 
 
-void copiar(RBT *c, NO* raiz){
+void rbt_copiar_aux(RBT *c, NO* raiz){
     if(raiz == NULL) return;
     rbt_inserir(c, raiz->chave);
-    copiar(c, raiz->f_esq);
-    copiar(c, raiz->f_dir);
+    rbt_copiar_aux(c, raiz->f_esq);
+    rbt_copiar_aux(c, raiz->f_dir);
 }
 
 RBT *rbt_copiar(RBT *T){
     RBT *c = rbt_criar();
-    copiar(c, T->raiz);
+    rbt_copiar_aux(c, T->raiz);
 
     return c;
 }
 
-void juntar_B(RBT *C, RBT *A, NO *raiz){
+void rbt_juntar_B(RBT *C, RBT *A, NO *raiz){
     if(raiz == NULL) return;
     if(!rbt_busca(A, raiz->chave)) rbt_inserir(C, raiz->chave);
-    juntar_B(C, A, raiz->f_esq);
-    juntar_B(C, A, raiz->f_dir);
+    rbt_juntar_B(C, A, raiz->f_esq);
+    rbt_juntar_B(C, A, raiz->f_dir);
 }
 
 RBT* rbt_uniao(RBT *A, RBT *B){
     RBT *C = rbt_copiar(A);
-    juntar_B(C, A, B->raiz);
+    rbt_juntar_B(C, A, B->raiz);
 
     return C;
 }
 
-void inter_B(RBT *C, RBT *A, NO *raiz){
+void rbt_inter_B(RBT *C, RBT *A, NO *raiz){
     if(raiz == NULL) return;
     if(rbt_busca(A, raiz->chave)) rbt_inserir(C, raiz->chave);
-    inter_B(C, A, raiz->f_esq);
-    inter_B(C, A, raiz->f_dir);
+    rbt_inter_B(C, A, raiz->f_esq);
+    rbt_inter_B(C, A, raiz->f_dir);
 }
 
 RBT* rbt_inter(RBT *A, RBT *B){
     RBT *C = rbt_criar();
-    inter_B(C, A, B->raiz);
+    rbt_inter_B(C, A, B->raiz);
 
     return C;
 }
