@@ -9,7 +9,7 @@ int main(int argc, char *argv[])
   int op;
   int tipo;
 
-  scanf("%d", &tipo); /*0 -> ED1, 1 -> ED2*/
+  scanf("%d", &tipo); /*0 -> AVL, 1 -> RBT*/
 
   A = set_criar(tipo);
   B = set_criar(tipo);
@@ -33,28 +33,35 @@ int main(int argc, char *argv[])
   switch(op){
     case 1: {
               //pertence
-              ...
+              int n;
+              scanf(" %d", &n);
+              set_pertence(A, n) ? printf("Pertence\n") : printf("Não pertence\n");
               break;
     }
     case 2: {
-              //união
-              ...
+              //uniao
+              SET *C = (SET*) set_uniao(A, B);
+              set_imprimir(C);
+              set_apagar(&C);
               break;
     }
     case 3: {
               //intersecção
-              ...
-              set_imprimir(???);
+              SET *C = (SET*) set_interseccao(A, B);
+              set_imprimir(C);
+              set_apagar(&C);
               break;
     }
     case 4: {
               //remoção
-              ...
-              set_imprimir(???); 
+              int n;
+              scanf(" %d", &n);
+              set_remover(A, n);
+              set_imprimir(A); 
     }
   }
-
-  ....
+  set_apagar(&A);
+  set_apagar(&B);
     
   return 0;
 }
