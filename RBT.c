@@ -5,6 +5,8 @@
 #define PRETO 0
 #define VERMELHO 1
 
+/*DECLARAÇÕES**************************************************************/
+
 typedef struct no NO;
 struct no{
     int chave;
@@ -36,17 +38,29 @@ NO *cria_no(int chave){
     return no;
 }
 
+/*INSERCAO**************************************************************/
+
 void rbt_rodar_esq(NO *a) {
     NO *b = a->f_dir;
 
+    //inverte a posicao e 'a' e 'b'
     a->f_dir = b->f_esq;
     b->f_esq = a;
+
+    //troca das cores
+    b->cor = a->cor;
+    a->cor = VERMELHO;
 }
 void rbt_rodar_dir(NO *a) {
     NO *b = a->f_esq;
 
+    //inverte a posicao e 'a' e 'b'
     a->f_esq = b->f_dir;
     b->f_dir = a;
+
+    //troca das cores
+    b->cor = a->cor;
+    a->cor = VERMELHO;
 }
 
 void inverte(NO *raiz) {
@@ -82,23 +96,16 @@ NO *rbt_insere_no(NO *no, int chave) {
 
 bool rbt_inserir (RBT *T, int chave) {
     if (T != NULL) {
-        if (rbt_insere_no(T->raiz, chave) != NULL) 
+        if (rbt_insere_no(T->raiz, chave) != NULL) {
+            T->raiz->cor = PRETO;
             return true;
+        }
+            
     }
     return false;
 }
 
-void rbt_imprimir_aux(NO *raiz){
-    if (raiz == NULL) return;
-    printf("%d ", raiz->chave);
-    rbt_imprimir_aux(raiz->f_esq);
-    rbt_imprimir_aux(raiz->f_dir);
-}
-
-void rbt_imprimir (RBT *T) {
-    if (T != NULL) 
-        rbt_imprimir_aux(T->raiz);
-}
+/*LIBERA-MEMÓRIA**************************************************************/
 
 void rbt_libera(NO **raiz) {
     if (*raiz != NULL) {
@@ -119,7 +126,13 @@ void rbt_apagar (RBT **T) {
     }
 }
 
+/*REMOÇÃO**************************************************************/
+
 bool rbt_remover(RBT *T, int chave);  
+
+
+
+/*OPERAÇÕES-SET**************************************************************/
 
 bool rbt_buscar_no(NO *raiz, int chave){
     if(raiz == NULL){
@@ -134,6 +147,19 @@ bool rbt_busca(RBT *T, int chave) {
     if (T == NULL) return false;
     return rbt_buscar_no(T->raiz, chave);
 }
+
+void rbt_imprimir_aux(NO *raiz){
+    if (raiz == NULL) return;
+    printf("%d ", raiz->chave);
+    rbt_imprimir_aux(raiz->f_esq);
+    rbt_imprimir_aux(raiz->f_dir);
+}
+
+void rbt_imprimir (RBT *T) {
+    if (T != NULL) 
+        rbt_imprimir_aux(T->raiz);
+}
+
 
 bool rbt_vazia(RBT *T) {
     if (T == NULL) return true; //evita acesso indevido de memoria
