@@ -76,7 +76,7 @@ bool set_inserir (SET *s, int elemento){
 bool set_remover(SET *s, int elemento){
     if(s == NULL) return false;
     if(s->tipo == 0) return avl_remover(s->avl, elemento);
-    if(s->tipo == 1) return rbt_remover(s->rbt, elemento);
+    //if(s->tipo == 1) return rbt_remover(s->rbt, elemento);
 }
 
 
