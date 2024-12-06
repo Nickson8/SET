@@ -2,6 +2,8 @@
 #include <stdlib.h>
 #include <stdio.h>
 
+
+/// Estrututa auxiliar para a implementaçao
 typedef struct no NO;
 struct no{
     int chave;
@@ -10,6 +12,7 @@ struct no{
     int FB;
 };
 
+// Estrutura que representa a arvore
 struct avl{
     NO *raiz;
     int prof;
@@ -22,7 +25,14 @@ int max(int a, int b){
 }
 /***************************************************************/
 
- AVL *avl_criar(void){
+/**
+ * Cria uma arvore
+ * 
+ * @param void
+ * 
+ * @return O ponteiro para a arvore que foi criada
+ */
+AVL *avl_criar(void){
     AVL *ab = malloc(sizeof(AVL));
     if(ab != NULL){
         ab->raiz = NULL;
@@ -30,10 +40,17 @@ int max(int a, int b){
     }
 
     return ab;
- }
+}
 
 /***************************************************************/
 
+/**
+ * Verifica se a arvore esta cheia
+ * 
+ * @param T -> arvore que será analisada
+ * 
+ * @return true caso esteja cheia, false caso contrario
+ */
 bool avl_cheia(AVL *T){
     NO *no = (NO*) criar_no(0);
     if(no == NULL){
@@ -45,6 +62,13 @@ bool avl_cheia(AVL *T){
 
 /***************************************************************/
 
+/**
+ * Verifica se a arvore esta vazia
+ * 
+ * @param T -> arvore que será analisada
+ * 
+ * @return true caso esteja vazia, false caso contrario
+ */
 bool avl_vazia(AVL *T){
     if(T != NULL){
         return false;
@@ -55,6 +79,13 @@ bool avl_vazia(AVL *T){
 
 /***************************************************************/
 
+/**
+ * Funçao recursiva para o calculo da altura de um no
+ * 
+ * @param r -> no que será analisado
+ * 
+ * @return altura do no
+ */
 int altura_no(NO *r){
     if(r == NULL) return -1;
     int e = altura_no(r->f_esq);
@@ -63,11 +94,19 @@ int altura_no(NO *r){
     return (max(e,d)+1);
 }
 
+/**
+ * Funçao que roda uma sub-arvore para a esquerda
+ * 
+ * @param a -> no que acontecera a rotaçao
+ * 
+ * @return no raiz da sub-arvora rotacionada
+ */
 NO* rodar_esq(NO *a){
     NO *b = a->f_dir;
     a->f_dir = b->f_esq;
     b->f_esq = a;
 
+    // Ajustando os FB dependendo do caso
     if(a->FB == -2 && b->FB == -2){
         a->FB = 1;
         b->FB = 0;
@@ -96,6 +135,13 @@ NO* rodar_esq(NO *a){
     return b;
 }
 
+/**
+ * Funçao que roda uma sub-arvore para a direita
+ * 
+ * @param a -> no que acontecera a rotaçao
+ * 
+ * @return no raiz da sub-arvora rotacionada
+ */
 NO* rodar_dir(NO *a){
     NO *b = a->f_esq;
     a->f_esq = b->f_dir;
@@ -129,11 +175,27 @@ NO* rodar_dir(NO *a){
     return b;
 }
 
+/**
+ * Funçao que roda uma sub-arvore, primeiro rodando seu filho para a esquerda,
+ * depois a raiz para a direita
+ * 
+ * @param a -> no que acontecera a rotaçao
+ * 
+ * @return no raiz da sub-arvora rotacionada
+ */
 NO* rodar_esq_dir(NO *a){
     a->f_esq = rodar_esq(a->f_esq);
     return rodar_dir(a);
 }
 
+/**
+ * Funçao que roda uma sub-arvore, primeiro rodando seu filho para a direita,
+ * depois a raiz para a esquerda
+ * 
+ * @param a -> no que acontecera a rotaçao
+ * 
+ * @return no raiz da sub-arvora rotacionada
+ */
 NO* rodar_dir_esq(NO *a){
     a->f_dir = rodar_dir(a->f_dir);
     return rodar_esq(a);
@@ -141,6 +203,14 @@ NO* rodar_dir_esq(NO *a){
 
 /***************************************************************/
 
+/**
+ * Funçao recursiva para achar a posiçao para se inserir um no
+ * 
+ * @param raiz -> no que esta sendo analisado
+ * @param no -> no que sera inserido
+ * 
+ * @return raiz (usado para as rotações)
+ */
 NO* inserir_no(NO *raiz, NO *no){
     if(raiz == NULL){
         raiz = no;
@@ -152,6 +222,7 @@ NO* inserir_no(NO *raiz, NO *no){
     
     raiz->FB = altura_no(raiz->f_esq) - altura_no(raiz->f_dir);
 
+    //Fazendo a rotaçao caso necessario
     if(raiz->FB == -2){
         if(raiz->f_dir->FB <= 0)
             raiz = rodar_esq(raiz);
@@ -169,6 +240,13 @@ NO* inserir_no(NO *raiz, NO *no){
     
 }
 
+/**
+ * Funçao axiliar que cria um no
+ * 
+ * @param chave -> chave do no
+ * 
+ * @return no que foi criado
+ */
 NO* criar_no(int chave){
     NO *no = (NO*) malloc(sizeof(NO));
     if(no != NULL){
@@ -180,6 +258,14 @@ NO* criar_no(int chave){
     return no;
 }
 
+/**
+ * Funçao que insere um no na arvore
+ * 
+ * @param T -> arvore que tera o no inserido
+ * @param chave -> chave do no
+ * 
+ * @return true caso consiga inserir, false caso contrario
+ */
 bool avl_inserir (AVL *T, int chave){
     if(T == NULL){
         return false;
@@ -194,6 +280,16 @@ bool avl_inserir (AVL *T, int chave){
 
 /***************************************************************/
 
+/**
+ * Funçao recursiva para achar o maior no da sub-arvore esquerda e trocar ele
+ * com o no que será removido
+ * 
+ * @param troca -> no que sera trocado
+ * @param raiz -> no que sera removido
+ * @param ant -> no pai do troca
+ * 
+ * @return void
+ */
 void troca_max_esq(NO *troca, NO *raiz, NO *ant){
     if(troca->f_dir != NULL){
         troca_max_esq(troca->f_dir, raiz, troca);
@@ -207,6 +303,14 @@ void troca_max_esq(NO *troca, NO *raiz, NO *ant){
     troca = NULL;
 }
 
+/**
+ * Funçao recursiva para achar o no com a chave a ser removido
+ * 
+ * @param raiz -> endereço do ponteiro para o no que esta sendo analisado
+ * @param chave -> chave do no a ser removido
+ * 
+ * @return true caso consiga remover, false caso contrario
+ */
 bool remover_aux(NO **raiz, int chave){
     if(*raiz == NULL) return false;
     if((*raiz)->chave == chave){
@@ -217,6 +321,7 @@ bool remover_aux(NO **raiz, int chave){
             else *raiz = (*raiz)->f_esq;
             free(p);
             p = NULL;
+        // 2 filhos
         } else{
             troca_max_esq((*raiz)->f_esq, (*raiz), (*raiz));
         }
@@ -227,6 +332,7 @@ bool remover_aux(NO **raiz, int chave){
         else
             return remover_aux(&((*raiz)->f_dir), chave);
     }
+    //Fazendo a rotaçao caso necessario
     if(*raiz != NULL){
         (*raiz)->FB = altura_no((*raiz)->f_esq) - altura_no((*raiz)->f_dir);
 
@@ -245,6 +351,14 @@ bool remover_aux(NO **raiz, int chave){
     }
 }
 
+/**
+ * Funçao que remove um no da arvore
+ * 
+ * @param T -> arvore que tera o no removido
+ * @param chave -> chave do no
+ * 
+ * @return true caso consiga remover, false caso contrario
+ */
 bool avl_remover(AVL *T, int chave){
     if(avl_vazia(T)) return false;
     return remover_aux(&(T->raiz), chave);
@@ -253,6 +367,14 @@ bool avl_remover(AVL *T, int chave){
 
 /***************************************************************/
 
+/**
+ * Funçao recursiva para achar o no
+ * 
+ * @param raiz -> no que esta sendo analisado
+ * @param chave -> chave do no a ser encontrada
+ * 
+ * @return true caso consiga achar, false caso contrario
+ */
 bool buscar_no(NO *raiz, int chave){
     if(raiz == NULL){
         return false;
@@ -263,6 +385,14 @@ bool buscar_no(NO *raiz, int chave){
     
 }
 
+/**
+ * Funçao que busca um no na arvore
+ * 
+ * @param T -> arvore que tera o no removido
+ * @param chave -> chave do no
+ * 
+ * @return true caso consiga remover, false caso contrario
+ */
 bool avl_busca (AVL *T, int chave){
     if(T == NULL){
         return false;
@@ -272,6 +402,14 @@ bool avl_busca (AVL *T, int chave){
 
 /***************************************************************/
 
+/**
+ * Funçao recursiva para dar print nos valores das chaves de todos os nos da
+ * arvore
+ * 
+ * @param raiz -> no que esta sendo analisado
+ * 
+ * @return void
+ */
 void imprima(NO *raiz){
     if(raiz == NULL) return;
     imprima(raiz->f_esq);
@@ -279,6 +417,13 @@ void imprima(NO *raiz){
     imprima(raiz->f_dir);
 }
 
+/**
+ * Funçao para dar print nos valores das chaves de todos os nos da arvore
+ * 
+ * @param T -> arvore que tera suas chaves printadas
+ * 
+ * @return void
+ */
 void avl_imprimir (AVL *T){
     if(T == NULL) return;
     imprima(T->raiz);
@@ -287,6 +432,13 @@ void avl_imprimir (AVL *T){
 
 /***************************************************************/
 
+/**
+ * Funçao recursiva para liberar a memória de todos os nós de uma árvore AVL
+ * 
+ * @param raiz -> ponteiro para o ponteiro da raiz da árvore que será apagada
+ * 
+ * @return void
+ */
 void apagar_arv(NO **raiz){
     if(*raiz != NULL){
         apagar_arv(&((*raiz)->f_esq));
@@ -296,14 +448,30 @@ void apagar_arv(NO **raiz){
     }
     return;
 }
- void avl_apagar(AVL **T){
+
+/**
+ * Funçao para apagar completamente uma árvore AVL e liberar sua memória
+ * 
+ * @param T -> ponteiro para o ponteiro da árvore que será apagada
+ * 
+ * @return void
+ */
+void avl_apagar(AVL **T){
     if(*T != NULL){
         apagar_arv(&((*T)->raiz));
         free(*T);
         *T = NULL;
     }
- }
+}
 
+/**
+ * Funçao recursiva para copiar os elementos de uma árvore AVL para outra
+ * 
+ * @param c    -> árvore destino onde os elementos serão inseridos
+ * @param raiz -> nó atual da árvore origem sendo copiado
+ * 
+ * @return void
+ */
 void copiar(AVL *c, NO* raiz){
     if(raiz == NULL) return;
     avl_inserir(c, raiz->chave);
@@ -311,6 +479,13 @@ void copiar(AVL *c, NO* raiz){
     copiar(c, raiz->f_dir);
 }
 
+/**
+ * Funçao para criar uma cópia de uma árvore AVL
+ * 
+ * @param T -> árvore que será copiada
+ * 
+ * @return AVL* -> ponteiro para a nova árvore copiada
+ */
 AVL *avl_copiar(AVL *T){
     AVL *c = avl_criar();
     copiar(c, T->raiz);
@@ -318,12 +493,32 @@ AVL *avl_copiar(AVL *T){
     return c;
 }
 
+/**
+ * Funçao recursiva para unir os elementos de uma árvore AVL em outra,
+ * inserindo apenas os elementos que não estão presentes na árvore de origem
+ * 
+ * @param C    -> árvore destino onde os elementos serão unidos
+ * @param A    -> árvore origem que será comparada
+ * @param raiz -> nó atual da árvore origem sendo analisado
+ * 
+ * @return void
+ */
 void juntar_B(AVL *C, AVL *A, NO *raiz){
     if(raiz == NULL) return;
     if(!avl_busca(A, raiz->chave)) avl_inserir(C, raiz->chave);
     juntar_B(C, A, raiz->f_esq);
     juntar_B(C, A, raiz->f_dir);
 }
+
+/**
+ * Funçao para realizar a união de duas árvores AVL, criando uma nova árvore
+ * com todos os elementos das duas árvores sem repetições
+ * 
+ * @param A -> primeira árvore para a união
+ * @param B -> segunda árvore para a união
+ * 
+ * @return AVL* -> ponteiro para a nova árvore resultante da união
+ */
 AVL* avl_uniao(AVL *A, AVL *B){
     AVL *C = avl_copiar(A);
     juntar_B(C, A, B->raiz);
@@ -331,12 +526,32 @@ AVL* avl_uniao(AVL *A, AVL *B){
     return C;
 }
 
+/**
+ * Funçao recursiva para realizar a interseção dos elementos de uma árvore AVL
+ * com outra, inserindo apenas os elementos comuns na árvore destino
+ * 
+ * @param C    -> árvore destino onde os elementos comuns serão inseridos
+ * @param A    -> primeira árvore para comparação
+ * @param raiz -> nó atual da segunda árvore sendo analisado
+ * 
+ * @return void
+ */
 void inter_B(AVL *C, AVL *A, NO *raiz){
     if(raiz == NULL) return;
     if(avl_busca(A, raiz->chave)) avl_inserir(C, raiz->chave);
     inter_B(C, A, raiz->f_esq);
     inter_B(C, A, raiz->f_dir);
 }
+
+/**
+ * Funçao para realizar a interseção de duas árvores AVL, criando uma nova
+ * árvore com os elementos comuns às duas árvores
+ * 
+ * @param A -> primeira árvore para a interseção
+ * @param B -> segunda árvore para a interseção
+ * 
+ * @return AVL* -> ponteiro para a nova árvore resultante da interseção
+ */
 AVL* avl_inter(AVL *A, AVL *B){
     AVL *C = avl_criar();
     inter_B(C, A, B->raiz);
