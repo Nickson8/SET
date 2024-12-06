@@ -1,10 +1,8 @@
 #ifndef _SET_H
 #define _SET_H
 
-  #include "AVL.h" //São as interfaces dos TADs que serão 
-  #include "RBT.h" //utilizados para armazenar os Dados do Set.
-                   //i.e, Set é um TAD que usa outros TADs. 
-                   //Pode trocar os nomes! ;-)
+  #include "AVL.h"
+  #include "RBT.h"
 
  typedef struct set SET;
 
