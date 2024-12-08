@@ -7,6 +7,7 @@
 
 /*DECLARAÇÕES**************************************************************/
 
+//estrutura de nó que representará os vértices da arvore
 typedef struct no NO;
 struct no{
     int chave;
@@ -15,10 +16,18 @@ struct no{
     int cor;
 };
 
+//estrutura que permite o acesso a arvore
 struct rbt {
     NO *raiz;
 };
 
+/**
+ * Cria uma arvore
+ * 
+ * @param void
+ * 
+ * @return O ponteiro para a arvore que foi criada
+ */
 RBT *rbt_criar (void) {
     RBT *T = malloc(sizeof(RBT));
     if (T == NULL) exit(-1);
@@ -26,6 +35,7 @@ RBT *rbt_criar (void) {
     T->raiz = NULL;    
     return T;
 }
+
 
 NO *cria_no(int chave){
     NO *no = malloc(sizeof(NO));
@@ -114,7 +124,8 @@ NO *rbt_insere_no(NO *raiz, int chave) {
 
 bool rbt_inserir (RBT *T, int chave) {
     if (T != NULL) {
-        if (rbt_insere_no(T->raiz, chave) != NULL) {
+        T->raiz = rbt_insere_no(T->raiz, chave);
+        if (T->raiz != NULL) {
             T->raiz->cor = PRETO;
             return true;
         }
