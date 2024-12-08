@@ -1,0 +1,51 @@
+Alunos:
+Nicolas de Sousa Maia - 15481857
+Felipe Camargo Cerri
+
+A primeira estrutura de dados que escolhesmos para representar o SET foi uma árvore
+AVL. Devido ao seu auto-balanceamento por meio das rotações essa estrutura é exetre-
+mamente eficiente para as operações que queremos em nosso TAD SET, como busca, inser-
+ção, entre outros.
+Para as complexidades das operações temos:
+- avl_criar(), avl_vazia(), avl_cheia():
+    Possuem complexidade constante, já que só realizam uma quantidade limitada e pe-
+    quena de operações.
+
+- avl_inserir():
+    Possui complexidade O(2*log²(n)), sendo n a altura da arvore, uma vez que faz uma
+    busca em arvore binaria até o nó, que tem complexidade log(n), chamando depois,
+    para calcular o FB do nó, duas vezes a função altura_no(), que também tem complexi-
+    dade log(n), sendo a complexidade final:
+    log(n)*(2*log(n)) = 2*log²(n).
+
+- avl_remover():
+    Possui complexidade O(2*log²(n)), por motivos análogos ao da inserção, sendo que
+    nesse caso o calculo da complexidade também envolve a função troca_max_esq, que tem
+    complexidade log(n), sendo o calculo final:
+    log(n)*(2*log(n)) + log(n) = 2*log²(n) + log(n)
+
+- avl_imprimir():
+    Possúi complexidade O(2N), em que N é o número de elementos da árvore, uma vez que
+    as única operações que realiza enquanto faz as visitas pelos nós é imprimí-los e
+    verificar se não são nulos, visitando todos os nós.
+
+- avl_apagar():
+    Possúi complexidade O(3N), por motivos análogos ao da impressão, relaizando, sendo que
+    faz uma operação a mais.
+
+- avl_busca():
+    Possúi complexidade O(2log(n)), pois sempre faz duas comparações nas chamadas recursivas
+    em que entra.
+
+- avl_copiar():
+    Possúi complexidade O(N*log²(n)), uma vez que para cada nó da árvore de origem, faz uma
+    operação de inserção na árvore de destino.
+
+- avl_uniao():
+    Possúi complexidade O(N*log²(n)), contudo, vejamos seu cálculo:
+    N * (log²(n) + log(n)), pois faz uma operação de busca e outra de inserção.
+    O que nos permite ver que é pior do que a anterior.
+
+- avl_inter():
+    Possúi complexidade O(N*log²(n)), por motivos análogos à avl_uniao(), sendo o cálculo o
+    mesmo.
