@@ -38,9 +38,28 @@ NO *cria_no(int chave){
     return no;
 }
 
+/*ARRUMA_ARVORE**************************************************************/
+
+//permite que as funções sejam usados na "arruma_arvore"
+NO *rbt_rodar_esq(NO *a);
+NO *rbt_rodar_dir(NO *a);
+void inverte(NO *raiz);
+bool cor(NO *raiz);
+
+
+NO *arruma_arvore(NO *h) {
+    if (cor(h->f_dir) == VERMELHO && cor(h->f_esq) == PRETO)
+            h = rbt_rodar_esq(h);
+        else if (cor(h->f_dir) ==  PRETO && cor(h->f_esq) == VERMELHO)
+            h = rbt_rodar_dir(h);
+        else if (cor(h->f_dir) == VERMELHO && cor(h->f_esq) == VERMELHO)
+            inverte(h); 
+    return h;        
+}
+
 /*INSERCAO**************************************************************/
 
-void rbt_rodar_esq(NO *a) {
+NO *rbt_rodar_esq(NO *a) {
     NO *b = a->f_dir;
 
     //inverte a posicao e 'a' e 'b'
@@ -50,8 +69,10 @@ void rbt_rodar_esq(NO *a) {
     //troca das cores
     b->cor = a->cor;
     a->cor = VERMELHO;
+
+    return b;
 }
-void rbt_rodar_dir(NO *a) {
+NO *rbt_rodar_dir(NO *a) {
     NO *b = a->f_esq;
 
     //inverte a posicao e 'a' e 'b'
@@ -61,6 +82,8 @@ void rbt_rodar_dir(NO *a) {
     //troca das cores
     b->cor = a->cor;
     a->cor = VERMELHO;
+
+    return b;
 }
 
 void inverte(NO *raiz) {
@@ -77,21 +100,16 @@ bool cor(NO *raiz) {
     return raiz->cor;
 }
 
-NO *rbt_insere_no(NO *no, int chave) {
-    if (no == NULL) {
+NO *rbt_insere_no(NO *raiz, int chave) {
+    if (raiz == NULL) {
         return cria_no(chave);
     }
-    if (no->chave <= chave)
-        rbt_insere_no(no->f_dir, chave);
+    if (raiz->chave <= chave)
+        raiz->f_dir = rbt_insere_no(raiz->f_dir, chave);
     else
-        rbt_insere_no(no->f_esq, chave);
+        raiz->f_esq = rbt_insere_no(raiz->f_esq, chave);
 
-    if (cor(no->f_dir) == VERMELHO && cor(no->f_esq) == PRETO)
-        rbt_rodar_esq(no);
-    else if (cor(no->f_dir) ==  PRETO && cor(no->f_esq) == VERMELHO)
-        rbt_rodar_dir(no);
-    else if (cor(no->f_dir) == VERMELHO && cor(no->f_esq) == VERMELHO)
-        inverte(no);    
+    arruma_arvore(raiz);  
 }
 
 bool rbt_inserir (RBT *T, int chave) {
@@ -128,7 +146,82 @@ void rbt_apagar (RBT **T) {
 
 /*REMOÇÃO**************************************************************/
 
-bool rbt_remover(RBT *T, int chave);  
+NO *move_esq(NO *a) {
+    inverte(a);
+    if (cor(a->f_dir->f_esq) == VERMELHO){
+        a->f_dir = rbt_rodar_dir(a);
+        a = rbt_rodar_esq(a);
+        inverte(a);
+    }
+    return a;
+}
+
+NO *move_dir(NO *a) {
+    inverte(a);
+    if (cor(a->f_esq->f_esq) == VERMELHO){
+        a = rbt_rodar_dir(a);
+
+        inverte(a);
+    }
+    return a;
+}
+
+NO *deleta_minimo(NO *raiz) {
+    if (raiz->f_esq == NULL) 
+        return NULL;
+    if (cor(raiz->f_esq) == PRETO && cor(raiz->f_esq->f_esq))
+        raiz = move_esq(raiz);
+
+    raiz->f_esq = deleta_minimo(raiz->f_esq);
+
+    return arruma_arvore(raiz);
+}
+
+int acha_minimo(NO *raiz) {
+    if (raiz->f_esq == NULL)
+        return raiz->chave;
+    else
+        return acha_minimo(raiz->f_esq);
+}
+
+NO *deleta_no(NO  *raiz, int chave) {
+    if (chave > raiz->chave ) {
+        if (cor(raiz->f_esq) == PRETO && raiz->f_esq != NULL && cor(raiz->f_esq->f_dir) == PRETO) {
+            raiz = move_esq(raiz);
+            raiz->f_esq = deleta_no(raiz->f_esq, chave);
+        }
+    }
+    else {
+        if (cor(raiz->f_esq) == VERMELHO)
+            raiz = rbt_rodar_dir(raiz);
+
+        //a chave é menor mas não existe arvore na direta -> chave não esta na arvore
+        if (raiz->chave == chave && raiz->f_dir == NULL) { 
+                return NULL;
+        }
+        if (cor(raiz->f_dir) == PRETO && cor(raiz->f_dir->f_esq) == PRETO)
+            raiz = move_dir(raiz);
+        //chave foi encontrada então precisamos substituir com o minimo da subarvore da esquerda
+        if (raiz->chave == chave) {
+            int NO_minimo = acha_minimo(raiz->f_dir);
+            raiz->chave = NO_minimo;
+            raiz->f_dir = deleta_minimo(raiz->f_dir);
+        }
+        else //segue busca pela subarvore da direita
+            raiz->f_dir = deleta_no(raiz->f_dir, chave);
+
+    }   
+    //ajusta arvore na volta
+    return arruma_arvore(raiz);
+}
+
+bool rbt_remover(RBT *T, int chave) {
+    if (T != NULL) 
+        if (deleta_no(T->raiz, chave) != NULL)
+            return true;
+
+    return false;
+}
 
 
 
