@@ -54,9 +54,9 @@ AVL *avl_criar(void){
 bool avl_cheia(AVL *T){
     NO *no = (NO*) criar_no(0);
     if(no == NULL){
-        free(no);
         return true;
     }
+    free(no);
     return false;
 }
 
@@ -71,7 +71,7 @@ bool avl_cheia(AVL *T){
  */
 bool avl_vazia(AVL *T){
     if(T != NULL){
-        return false;
+        if(T->raiz != NULL) return false;
     } else {
         return true;
     }
@@ -230,7 +230,7 @@ NO* inserir_no(NO *raiz, NO *no){
             raiz = rodar_dir_esq(raiz);
     }
     if(raiz->FB == 2){
-        if(raiz->f_dir->FB >= 0)
+        if(raiz->f_esq->FB >= 0)
             raiz = rodar_dir(raiz);
         else
             raiz = rodar_esq_dir(raiz);
@@ -251,6 +251,7 @@ NO* criar_no(int chave){
     NO *no = (NO*) malloc(sizeof(NO));
     if(no != NULL){
         no->chave = chave;
+        no->FB = 0;
         no->f_dir = NULL;
         no->f_esq = NULL;
     }
@@ -270,12 +271,9 @@ bool avl_inserir (AVL *T, int chave){
     if(T == NULL){
         return false;
     }
-    if(!avl_cheia(T)){
-        NO *no = (NO*) criar_no(chave);
-        T-> raiz = inserir_no(T->raiz, no);
-        return(true);
-    }
-    return false;
+    NO *no = (NO*) criar_no(chave);
+    T-> raiz = inserir_no(T->raiz, no);
+    return(true);
  }
 
 /***************************************************************/
@@ -343,7 +341,7 @@ bool remover_aux(NO **raiz, int chave){
                 (*raiz) = rodar_dir_esq((*raiz));
         }
         if((*raiz)->FB == 2){
-            if((*raiz)->f_dir->FB >= 0)
+            if((*raiz)->f_esq->FB >= 0)
                 (*raiz) = rodar_dir((*raiz));
             else
                 (*raiz) = rodar_esq_dir((*raiz));

@@ -6,3 +6,6 @@ clean:
 
 run:
 	./alg
+
+faz:
+	make clean; make; ./alg < casosTeste/3.in
