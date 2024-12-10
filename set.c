@@ -94,7 +94,7 @@ bool set_remover(SET *s, int elemento){
 void set_apagar(SET **s){
     if(*s == NULL) return;
     if((*s)->tipo == 0) return avl_apagar(&((*s)->avl));
-    // if((*s)->tipo == 1) return rbt_apagar(&((*s)->rbt));
+    if((*s)->tipo == 1) return rbt_apagar(&((*s)->rbt));
     free(*s);
     *s = NULL;
 }
