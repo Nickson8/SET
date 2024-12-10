@@ -9,13 +9,16 @@ int main(int argc, char *argv[])
   int op;
   int tipo;
 
+  //Lendo o tipo dos SETs
   scanf("%d", &tipo); /*0 -> AVL, 1 -> RBT*/
 
   A = set_criar(tipo);
   B = set_criar(tipo);
 
+  //Lendo o tamanho de cada SET
   scanf("%d %d", &n_a, &n_b);
 
+  //Inserindo os elementos
   for(int i=0; i<n_a; i++){
     scanf("%d",&x);
     set_inserir(A, x);
@@ -28,12 +31,15 @@ int main(int argc, char *argv[])
 
   }
 
+  //Lendo a operação
   scanf("%d", &op);
 
+  //Executando a operaçao
   switch(op){
     case 1: {
               //pertence
               int n;
+              //Lendo o numero que sera analisado
               scanf(" %d", &n);
               set_pertence(A, n) ? printf("Pertence\n") : printf("Não pertence\n");
               break;
@@ -57,6 +63,7 @@ int main(int argc, char *argv[])
     case 4: {
               //remoção
               int n;
+              //Lendo o numero que sera removido
               scanf(" %d", &n);
               if(set_remover(A, n)){
                 printf("Elemento removido com sucesso! Aqui esta o SET atualizado:\n");
