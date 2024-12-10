@@ -56,8 +56,12 @@ int main(int argc, char *argv[])
               //remoção
               int n;
               scanf(" %d", &n);
-              set_remover(A, n);
-              set_imprimir(A); 
+              if(set_remover(A, n)){
+                printf("Elemento removido com sucesso! Aqui esta o SET atualizado:\n");
+                set_imprimir(A);
+              }
+              else
+                printf("Nao foi possivel remover tal elemento\n");
     }
   }
   set_apagar(&A);
