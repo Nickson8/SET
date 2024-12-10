@@ -374,7 +374,7 @@ bool avl_remover(AVL *T, int chave){
  * 
  * @return true caso consiga achar, false caso contrario
  */
-bool buscar_no(NO *raiz, int chave){
+static bool buscar_no(NO *raiz, int chave){
     if(raiz == NULL){
         return false;
     }
@@ -386,12 +386,12 @@ bool buscar_no(NO *raiz, int chave){
 }
 
 /**
- * Funçao que busca um no na arvore
+ * Funçao recursiva para achar o no
  * 
- * @param T -> arvore que tera o no removido
- * @param chave -> chave do no
+ * @param raiz -> no que esta sendo analisado
+ * @param chave -> chave do no a ser encontrada
  * 
- * @return true caso consiga remover, false caso contrario
+ * @return true caso consiga achar, false caso contrario
  */
 bool avl_busca (AVL *T, int chave){
     if(T == NULL){
@@ -403,14 +403,14 @@ bool avl_busca (AVL *T, int chave){
 /***************************************************************/
 
 /**
- * Funçao recursiva para dar print nos valores das chaves de todos os nos da
- * arvore
+ * Funçao recursiva para imprimir nos valores das chaves de todos os nos da
+ * arvore em ordem
  * 
  * @param raiz -> no que esta sendo analisado
  * 
  * @return void
  */
-void imprima(NO *raiz){
+static void imprima(NO *raiz){
     if(raiz == NULL) return;
     imprima(raiz->f_esq);
     printf("%d ", raiz->chave);
@@ -472,7 +472,7 @@ void avl_apagar(AVL **T){
  * 
  * @return void
  */
-void copiar(AVL *c, NO* raiz){
+static void copiar(AVL *c, NO* raiz){
     if(raiz == NULL) return;
     avl_inserir(c, raiz->chave);
     copiar(c, raiz->f_esq);
@@ -503,7 +503,7 @@ AVL *avl_copiar(AVL *T){
  * 
  * @return void
  */
-void juntar_B(AVL *C, AVL *A, NO *raiz){
+static void juntar_B(AVL *C, AVL *A, NO *raiz){
     if(raiz == NULL) return;
     if(!avl_busca(A, raiz->chave)) avl_inserir(C, raiz->chave);
     juntar_B(C, A, raiz->f_esq);
