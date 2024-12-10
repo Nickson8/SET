@@ -41,6 +41,7 @@ int main(int argc, char *argv[])
     case 2: {
               //uniao
               SET *C = (SET*) set_uniao(A, B);
+              printf("Aqui esta SET da uniao entre A e B:\n");
               set_imprimir(C);
               set_apagar(&C);
               break;
@@ -48,6 +49,7 @@ int main(int argc, char *argv[])
     case 3: {
               //intersecção
               SET *C = (SET*) set_interseccao(A, B);
+              printf("Aqui esta SET da interseccao entre A e B:\n");
               set_imprimir(C);
               set_apagar(&C);
               break;
