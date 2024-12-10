@@ -75,6 +75,7 @@ bool avl_vazia(AVL *T){
     } else {
         return true;
     }
+    return false;
 }
 
 /***************************************************************/
@@ -381,6 +382,7 @@ bool buscar_no(NO *raiz, int chave){
     else if(chave < raiz->chave) return buscar_no(raiz->f_esq, chave);
     else if(chave > raiz->chave) return buscar_no(raiz->f_dir, chave);
     
+    return false;
 }
 
 /**

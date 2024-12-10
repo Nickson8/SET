@@ -45,6 +45,7 @@ bool set_pertence(SET *A, int elemento){
     if(A == NULL) return false;
     if(A->tipo == 0) return avl_busca(A->avl, elemento);
     if(A->tipo == 1) return rbt_busca(A->rbt, elemento);
+    return false;
 }
 
 
@@ -61,6 +62,7 @@ bool set_inserir (SET *s, int elemento){
     if(s == NULL) return false;
     if(s->tipo == 0) return avl_inserir(s->avl, elemento);
     if(s->tipo == 1) return rbt_inserir(s->rbt, elemento);
+    return false;
 }
 
 
@@ -77,6 +79,7 @@ bool set_remover(SET *s, int elemento){
     if(s == NULL) return false;
     if(s->tipo == 0) return avl_remover(s->avl, elemento);
     if(s->tipo == 1) return rbt_remover(s->rbt, elemento);
+    return false;
 }
 
 
