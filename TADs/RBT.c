@@ -30,7 +30,7 @@ struct rbt {
  */
 RBT *rbt_criar (void) {
     RBT *T = malloc(sizeof(RBT));
-    if (T == NULL) exit(-1);
+    if (T == NULL) return NULL;
 
     T->raiz = NULL;    
     return T;
@@ -243,7 +243,7 @@ NO *propaga_esq(NO *a) {
     if (cor(a->f_esq) == PRETO && a->f_esq != NULL && cor(a->f_esq->f_esq) == PRETO) {
         inverte(a);
         if ( a->f_dir != NULL && cor(a->f_dir->f_esq) == VERMELHO){
-            a->f_dir = rbt_rodar_dir(a);
+            a->f_dir = rbt_rodar_dir(a->f_dir);
             a = rbt_rodar_esq(a);
             inverte(a);
         }
@@ -260,16 +260,16 @@ NO *propaga_esq(NO *a) {
  * @return no raiz da sub-arvore que a operação foi realizada
  */
 NO *propaga_dir(NO *a) {
-    if (cor(a->f_esq) == VERMELHO) {
+    if (cor(a->f_esq) == VERMELHO) 
         a = rbt_rodar_dir(a);
-        if (cor(a->f_dir) == PRETO && a->f_dir != NULL && cor(a->f_dir->f_esq) == PRETO ){
+    if (cor(a->f_dir) == PRETO && a->f_dir != NULL && cor(a->f_dir->f_esq) == PRETO ){
+        inverte(a);
+        if (a->f_esq != NULL && cor(a->f_esq->f_esq) == VERMELHO) {
+            a = rbt_rodar_dir(a);
             inverte(a);
-            if (cor(a->f_esq->f_esq) == VERMELHO) {
-                a = rbt_rodar_dir(a);
-                inverte(a);
-            }
         }
     }
+    
     return a;
 }
 
@@ -339,14 +339,15 @@ NO *deleta_no(NO *raiz, int chave) {
             
     }
     else {
-        if (chave > raiz->chave ) {
-            propaga_dir(raiz);
-            raiz->f_dir = deleta_no(raiz->f_dir, chave);
-        }
         if (chave < raiz->chave ) {
             propaga_esq(raiz);
             raiz->f_esq = deleta_no(raiz->f_esq, chave);
         }
+        else {
+            propaga_dir(raiz);
+            raiz->f_dir = deleta_no(raiz->f_dir, chave);
+        }
+        
     }
     if (raiz != NULL)
         raiz = arruma_arvore(raiz);
