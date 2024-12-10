@@ -233,36 +233,42 @@ void rbt_apagar (RBT **T) {
 
 /**
  * Funçao que realiza o "MoveRedLeft" para ajustar a árvore na descida
- em busca de um nó a ser removido
+ * em busca de um nó a ser removido
  * 
  * @param a -> no que acontecera a operação
  * 
  * @return no raiz da sub-arvore que a operação foi realizada
  */
-NO *move_esq(NO *a) {
-    inverte(a);
-    if (cor(a->f_dir->f_esq) == VERMELHO){
-        a->f_dir = rbt_rodar_dir(a);
-        a = rbt_rodar_esq(a);
+NO *propaga_esq(NO *a) {
+    if (cor(a->f_esq) == PRETO && a->f_esq != NULL && cor(a->f_esq->f_esq) == PRETO) {
         inverte(a);
+        if ( a->f_dir != NULL && cor(a->f_dir->f_esq) == VERMELHO){
+            a->f_dir = rbt_rodar_dir(a);
+            a = rbt_rodar_esq(a);
+            inverte(a);
+        }
     }
     return a;
 }
 
 /**
  * Funçao que realiza o "MoveRedRight" para ajustar a árvore na descida
- em busca de um nó a ser removido
+ * em busca de um nó a ser removido
  * 
  * @param a -> no que acontecera a operação
  * 
  * @return no raiz da sub-arvore que a operação foi realizada
  */
-NO *move_dir(NO *a) {
-    inverte(a);
-    if (cor(a->f_esq->f_esq) == VERMELHO){
+NO *propaga_dir(NO *a) {
+    if (cor(a->f_esq) == VERMELHO) {
         a = rbt_rodar_dir(a);
-
-        inverte(a);
+        if (cor(a->f_dir) == PRETO && a->f_dir != NULL && cor(a->f_dir->f_esq) == PRETO ){
+            inverte(a);
+            if (cor(a->f_esq->f_esq) == VERMELHO) {
+                a = rbt_rodar_dir(a);
+                inverte(a);
+            }
+        }
     }
     return a;
 }
@@ -280,7 +286,7 @@ NO *deleta_minimo(NO *raiz) {
         return NULL;
     }
     if (cor(raiz->f_esq) == PRETO && cor(raiz->f_esq->f_esq))
-        raiz = move_esq(raiz);
+        raiz = propaga_esq(raiz);
 
     raiz->f_esq = deleta_minimo(raiz->f_esq);
 
@@ -310,38 +316,76 @@ int acha_minimo(NO *raiz) {
  * 
  * @return true caso consiga remover, false caso contrario
  */
-NO *deleta_no(NO  *raiz, int chave) {
-    if (chave > raiz->chave ) {
-        //ajuste "MoveRedLeft" caso necessário 
-        if (cor(raiz->f_esq) == PRETO && raiz->f_esq != NULL && cor(raiz->f_esq->f_dir) == PRETO) {
-            raiz = move_esq(raiz);
-            raiz->f_esq = deleta_no(raiz->f_esq, chave);
+NO *deleta_no(NO *raiz, int chave) {
+    if (raiz == NULL) return NULL; //chave nao esta na arvore
+    if (raiz->chave == chave) { //caso ache
+        // 1 ou 0 filhos
+        if(raiz->f_esq == NULL || raiz->f_dir == NULL){
+            NO *p = raiz;
+            if (raiz->f_esq == NULL) 
+                raiz = raiz->f_dir;
+            else 
+                raiz = raiz->f_esq;
+            free(p);
+            p = NULL;
+        // 2 filhos
         }
-    }
-    else {
-        //ajuste "MoveRedRight" caso necessário
-        if (cor(raiz->f_esq) == VERMELHO)
-            raiz = rbt_rodar_dir(raiz);
-
-        //a chave é menor mas não existe arvore na direta -> chave não esta na arvore
-        if (raiz->chave == chave && raiz->f_dir == NULL) { 
-                return NULL;
-        }
-        if (cor(raiz->f_dir) == PRETO && cor(raiz->f_dir->f_esq) == PRETO)
-            raiz = move_dir(raiz);
-        //chave foi encontrada então precisamos substituir com o minimo da sub arvore da esquerda
-        if (raiz->chave == chave) {
+        else {
+            raiz = propaga_dir(raiz);
             int NO_minimo = acha_minimo(raiz->f_dir);
             raiz->chave = NO_minimo;
             raiz->f_dir = deleta_minimo(raiz->f_dir);
         }
-        else //segue busca pela sub arvore da direita
+            
+    }
+    else {
+        if (chave > raiz->chave ) {
+            propaga_dir(raiz);
             raiz->f_dir = deleta_no(raiz->f_dir, chave);
+        }
+        if (chave < raiz->chave ) {
+            propaga_esq(raiz);
+            raiz->f_esq = deleta_no(raiz->f_dir, chave);
+        }
+    }
+    if (raiz != NULL)
+        raiz = arruma_arvore(raiz);
 
-    }   
-    //ajusta arvore na volta
-    return arruma_arvore(raiz);
+    return raiz;
 }
+
+// NO *deleta_no(NO  *raiz, int chave) {
+//     if (chave > raiz->chave ) {
+//         //ajuste "MoveRedLeft" caso necessário 
+//         if (cor(raiz->f_esq) == PRETO && raiz->f_esq != NULL && cor(raiz->f_esq->f_dir) == PRETO) {
+//             raiz = move_esq(raiz);
+//             raiz->f_esq = deleta_no(raiz->f_esq, chave);
+//         }
+//     }
+//     else {
+//         //ajuste "MoveRedRight" caso necessário
+//         if (cor(raiz->f_esq) == VERMELHO)
+//             raiz = rbt_rodar_dir(raiz);
+
+//         //a chave é menor mas não existe arvore na direta -> chave não esta na arvore
+//         if (raiz->chave == chave && raiz->f_dir == NULL) { 
+//                 return NULL;
+//         }
+//         if (cor(raiz->f_dir) == PRETO && raiz->f_dir != NULL &&  cor(raiz->f_dir->f_esq) == PRETO)
+//             raiz = move_dir(raiz);
+//         //chave foi encontrada então precisamos substituir com o minimo da sub arvore da esquerda
+//         if (raiz->chave == chave) {
+//             int NO_minimo = acha_minimo(raiz->f_dir);
+//             raiz->chave = NO_minimo;
+//             raiz->f_dir = deleta_minimo(raiz->f_dir);
+//         }
+//         else //segue busca pela sub arvore da direita
+//             raiz->f_dir = deleta_no(raiz->f_dir, chave);
+
+//     }   
+//     //ajusta arvore na volta
+//     return arruma_arvore(raiz);
+// }
 
 /**
  * Funçao que remove um no da arvore
