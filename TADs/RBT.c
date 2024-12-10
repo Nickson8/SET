@@ -45,7 +45,7 @@ RBT *rbt_criar (void) {
  */
 NO *cria_no(int chave){
     NO *no = malloc(sizeof(NO));
-    if (no == NULL) exit(-1);
+    if (no == NULL) return NULL;
     no->chave = chave;
     no->cor = VERMELHO;
     no->f_dir = NULL;
@@ -345,7 +345,7 @@ NO *deleta_no(NO *raiz, int chave) {
         }
         if (chave < raiz->chave ) {
             propaga_esq(raiz);
-            raiz->f_esq = deleta_no(raiz->f_dir, chave);
+            raiz->f_esq = deleta_no(raiz->f_esq, chave);
         }
     }
     if (raiz != NULL)
