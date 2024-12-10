@@ -60,7 +60,7 @@ bool cor(NO *raiz);
 NO *arruma_arvore(NO *h) {
     if (cor(h->f_dir) == VERMELHO && cor(h->f_esq) == PRETO)
         h = rbt_rodar_esq(h);
-    else if (cor(h->f_dir) ==  PRETO && cor((h->f_esq->f_esq)) == VERMELHO)
+    else if (cor(h->f_esq) ==  VERMELHO && cor((h->f_esq->f_esq)) == VERMELHO)
         h = rbt_rodar_dir(h);
     else if (cor(h->f_dir) == VERMELHO && cor(h->f_esq) == VERMELHO)
         inverte(h); 
