@@ -11,4 +11,4 @@ faz:
 	make clean; make; ./alg < casosTeste/3.in
 
 zip:
-	zip files.zip *.c *.h Makefile relatorio.txt
+	zip files.zip *.c *.h Makefile relatorio.txt *.in *.out
