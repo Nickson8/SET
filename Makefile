@@ -24,7 +24,7 @@ run:
 	./alg
 
 zip:
-	zip FelipeCerri_NicolasMaia makefile relatorio.txt *.c $(TAD_DIR)/*.c $(TAD_DIR)/*.h $(TEST_DIR)/*.in $(TEST_DIR)/*.out
+	zip FelipeCerri_NicolasMaia Makefile relatorio.txt *.c $(TAD_DIR)/*.c $(TAD_DIR)/*.h $(TEST_DIR)/*.in $(TEST_DIR)/*.out
 
 clean:
 	rm -rf $(OBJ_DIR) *.zip alg
