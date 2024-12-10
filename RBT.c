@@ -59,11 +59,12 @@ bool cor(NO *raiz);
 
 NO *arruma_arvore(NO *h) {
     if (cor(h->f_dir) == VERMELHO && cor(h->f_esq) == PRETO)
-            h = rbt_rodar_esq(h);
-        else if (cor(h->f_dir) ==  PRETO && cor(h->f_esq) == VERMELHO)
-            h = rbt_rodar_dir(h);
-        else if (cor(h->f_dir) == VERMELHO && cor(h->f_esq) == VERMELHO)
-            inverte(h); 
+        h = rbt_rodar_esq(h);
+    else if (cor(h->f_dir) ==  PRETO && cor((h->f_esq->f_esq)) == VERMELHO)
+        h = rbt_rodar_dir(h);
+    else if (cor(h->f_dir) == VERMELHO && cor(h->f_esq) == VERMELHO)
+        inverte(h); 
+
     return h;        
 }
 
@@ -178,8 +179,10 @@ NO *move_dir(NO *a) {
 }
 
 NO *deleta_minimo(NO *raiz) {
-    if (raiz->f_esq == NULL) 
+    if (raiz->f_esq == NULL) {
+        free(raiz);
         return NULL;
+    }
     if (cor(raiz->f_esq) == PRETO && cor(raiz->f_esq->f_esq))
         raiz = move_esq(raiz);
 
@@ -212,13 +215,13 @@ NO *deleta_no(NO  *raiz, int chave) {
         }
         if (cor(raiz->f_dir) == PRETO && cor(raiz->f_dir->f_esq) == PRETO)
             raiz = move_dir(raiz);
-        //chave foi encontrada então precisamos substituir com o minimo da subarvore da esquerda
+        //chave foi encontrada então precisamos substituir com o minimo da sub arvore da esquerda
         if (raiz->chave == chave) {
             int NO_minimo = acha_minimo(raiz->f_dir);
             raiz->chave = NO_minimo;
             raiz->f_dir = deleta_minimo(raiz->f_dir);
         }
-        else //segue busca pela subarvore da direita
+        else //segue busca pela sub arvore da direita
             raiz->f_dir = deleta_no(raiz->f_dir, chave);
 
     }   
