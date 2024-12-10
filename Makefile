@@ -3,7 +3,7 @@ TAD_DIR = TADs
 TEST_DIR = casosTeste
 
 all: $(OBJ_DIR) $(OBJ_DIR)/AVL.o $(OBJ_DIR)/RBT.o $(OBJ_DIR)/set.o $(OBJ_DIR)/main.o
-	gcc $(OBJ_DIR)/AVL.o $(OBJ_DIR)/RBT.o $(OBJ_DIR)/set.o $(OBJ_DIR)/main.o -o alg -std=c99 -Wall -lm
+	gcc $(OBJ_DIR)/AVL.o $(OBJ_DIR)/RBT.o $(OBJ_DIR)/set.o $(OBJ_DIR)/main.o -o alg -std=c99 -Wall 
 
 $(OBJ_DIR):
 	mkdir -p $(OBJ_DIR)

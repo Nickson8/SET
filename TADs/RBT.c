@@ -285,7 +285,7 @@ NO *deleta_minimo(NO *raiz) {
         free(raiz);
         return NULL;
     }
-    if (cor(raiz->f_esq) == PRETO && cor(raiz->f_esq->f_esq))
+    if (cor(raiz->f_esq) == PRETO && raiz->f_esq!= NULL && cor(raiz->f_esq->f_esq) == PRETO)
         raiz = propaga_esq(raiz);
 
     raiz->f_esq = deleta_minimo(raiz->f_esq);
@@ -354,39 +354,6 @@ NO *deleta_no(NO *raiz, int chave) {
 
     return raiz;
 }
-
-// NO *deleta_no(NO  *raiz, int chave) {
-//     if (chave > raiz->chave ) {
-//         //ajuste "MoveRedLeft" caso necessário 
-//         if (cor(raiz->f_esq) == PRETO && raiz->f_esq != NULL && cor(raiz->f_esq->f_dir) == PRETO) {
-//             raiz = move_esq(raiz);
-//             raiz->f_esq = deleta_no(raiz->f_esq, chave);
-//         }
-//     }
-//     else {
-//         //ajuste "MoveRedRight" caso necessário
-//         if (cor(raiz->f_esq) == VERMELHO)
-//             raiz = rbt_rodar_dir(raiz);
-
-//         //a chave é menor mas não existe arvore na direta -> chave não esta na arvore
-//         if (raiz->chave == chave && raiz->f_dir == NULL) { 
-//                 return NULL;
-//         }
-//         if (cor(raiz->f_dir) == PRETO && raiz->f_dir != NULL &&  cor(raiz->f_dir->f_esq) == PRETO)
-//             raiz = move_dir(raiz);
-//         //chave foi encontrada então precisamos substituir com o minimo da sub arvore da esquerda
-//         if (raiz->chave == chave) {
-//             int NO_minimo = acha_minimo(raiz->f_dir);
-//             raiz->chave = NO_minimo;
-//             raiz->f_dir = deleta_minimo(raiz->f_dir);
-//         }
-//         else //segue busca pela sub arvore da direita
-//             raiz->f_dir = deleta_no(raiz->f_dir, chave);
-
-//     }   
-//     //ajusta arvore na volta
-//     return arruma_arvore(raiz);
-// }
 
 /**
  * Funçao que remove um no da arvore
